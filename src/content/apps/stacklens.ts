@@ -7,14 +7,8 @@ const app: AppLP = {
   name: "スタックレンズ",
   tagline: "アプリの技術スタック判定",
   icon: "/apps/stacklens/icon.webp",
-  theme: {
-    brand: "#0a6ad6",
-    heroFrom: "#0a6ad6",
-    heroTo: "#10376b",
-    heroInk: "light",
-  },
-  screenshotCaptionRatio: 0.27,
-  screenshotAspect: 1080 / 1920,
+  accent: "#0a6ad6",
+  screenshots: { style: "card", aspect: 1080 / 1920, cropTop: 0.27 },
   hero: {
     headline: "そのアプリ、\n何で作られてる？",
     lead: "スマホに入っているアプリが Flutter、React Native、Unity などのどれで作られているかを判定する開発者向けツール。Flutter アプリはバージョンと使っているパッケージまでわかります。",

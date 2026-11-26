@@ -8,14 +8,8 @@ const app: AppLP = {
   name: "ドパ脱！",
   tagline: "習慣化・スマホ断ちの記録",
   icon: "/apps/dopadatsu/icon.webp",
-  theme: {
-    brand: "#E0653A",
-    heroFrom: "#6a9b69",
-    heroTo: "#4a7a49",
-    heroInk: "light",
-  },
-  screenshotCaptionRatio: 0.18,
-  screenshotAspect: 1080 / 1920,
+  accent: "#4a7a49",
+  screenshots: { style: "card", aspect: 1080 / 1920, cropTop: 0.18 },
   hero: {
     headline: "やめたい習慣を、\n小坊主と一緒にゆるく修行。",
     lead: "SNS、ショート動画、ゲーム。「やめたいのに、ついやってしまう」習慣を断った日数を記録して、ゆるく続けるためのアプリです。登録不要、記録はスマホの中だけ。",

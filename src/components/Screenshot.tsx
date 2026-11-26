@@ -1,26 +1,42 @@
 import Image from "next/image";
-import styles from "./lp.module.css";
+import type { AppLP } from "@/content/types";
+import { cn } from "@/lib/utils";
 
 type Props = {
   src: string;
   alt: string;
-  /** 幅 / 高さ */
-  aspect: number;
-  /** 上側を切り落とす割合（ストア画像の見出し部分を隠す） */
-  cropTop: number;
+  shots: AppLP["screenshots"];
   sizes: string;
   priority?: boolean;
   className?: string;
 };
 
-/** ストア用スクショの見出しを切り落とし、端末の部分だけを見せる */
-export function Screenshot({ src, alt, aspect, cropTop, sizes, priority, className }: Props) {
+/**
+ * アプリの画面。
+ * - device: 素の画面を、黒い端末の枠（CSS）に入れる
+ * - card:   ストア用の画像の見出しを切り落とし、角丸のカードにする
+ */
+export function Screenshot({ src, alt, shots, sizes, priority, className }: Props) {
+  if (shots.style === "device") {
+    return (
+      <div
+        className={cn(
+          "rounded-[2.6rem] bg-neutral-900 p-[3.2%] shadow-xl shadow-neutral-900/15 ring-1 ring-neutral-900/10",
+          className,
+        )}
+      >
+        <div className="relative overflow-hidden rounded-[2.1rem] bg-neutral-100" style={{ aspectRatio: shots.aspect }}>
+          <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
+        </div>
+      </div>
+    );
+  }
   return (
     <div
-      className={`${styles.shot} ${className ?? ""}`}
-      style={{ aspectRatio: `${aspect / (1 - cropTop)}` }}
+      className={cn("relative overflow-hidden rounded-3xl shadow-xl shadow-neutral-900/10 ring-1 ring-neutral-900/10", className)}
+      style={{ aspectRatio: `${shots.aspect / (1 - shots.cropTop)}` }}
     >
-      <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className={styles.shotImg} />
+      <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover object-bottom" />
     </div>
   );
 }

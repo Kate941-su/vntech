@@ -4,6 +4,7 @@ import { Features } from "@/components/Features";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
 import { NewsSection } from "@/components/NewsSection";
+import { SiteHeader } from "@/components/SiteHeader";
 import { apps, findApp } from "@/content/site";
 
 type Props = { params: Promise<{ app: string }> };
@@ -42,18 +43,14 @@ export default async function AppPage({ params }: Props) {
   if (!app) notFound();
 
   return (
-    <div
-      style={
-        {
-          "--brand": app.theme.brand,
-          "--hero-from": app.theme.heroFrom,
-          "--hero-to": app.theme.heroTo,
-        } as React.CSSProperties
-      }
-    >
-      <Hero app={app} />
-      <Features app={app} />
-      <NewsSection app={app} />
+    // アクセント色はこのアプリの 1 色だけ（bg-brand / text-brand で使う）
+    <div style={{ "--brand": app.accent } as React.CSSProperties}>
+      <SiteHeader />
+      <main>
+        <Hero app={app} />
+        <Features app={app} />
+        <NewsSection app={app} />
+      </main>
       <Footer app={app} />
     </div>
   );

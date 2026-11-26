@@ -2,9 +2,13 @@ import type { AppLP, ExternalApp } from "./types";
 import dataHolder from "./apps/data-holder";
 import dopadatsu from "./apps/dopadatsu";
 import stacklens from "./apps/stacklens";
+import pianotap from "./apps/pianotap";
+import classicplayer from "./apps/classicplayer";
+import fuyoshift from "./apps/fuyoshift";
+import tabipoke from "./apps/tabipoke";
 
 /** LP を持つアプリ。並び順がトップページとフッターの一覧の順になる */
-export const apps: AppLP[] = [dopadatsu, dataHolder, stacklens];
+export const apps: AppLP[] = [dopadatsu, dataHolder, stacklens, pianotap, classicplayer, fuyoshift, tabipoke];
 
 /** LP を持たない自社アプリ（フッターの一覧にだけ載せる） */
 export const externalApps: ExternalApp[] = [
