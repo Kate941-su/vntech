@@ -8,29 +8,25 @@ const app: AppLP = {
   name: "<アプリ名>",
   tagline: "<一言の説明。ストアのサブタイトル程度>",
   icon: "/apps/<slug>/icon.webp",
-  theme: {
-    brand: "<#アクセント色>",
-    heroFrom: "<#スクショ上端の背景色>",
-    heroTo: "<#スクショ下端の背景色>",
-    heroInk: "light", // 明るい背景なら "dark"
-  },
-  screenshotCaptionRatio: 0.2,
-  screenshotAspect: 1080 / 1920,
+  // 白地で読める濃さのアクセント 1 色（.claude/rules/design.md）
+  accent: "<#アクセント色>",
+  // 素の画面があれば device（推奨）。無ければ card（ストア画像の見出しを cropTop で切る）
+  screenshots: { style: "device", aspect: 1080 / 2400, cropTop: 0 },
   hero: {
     headline: "<1 行目>\n<2 行目>",
     lead: "<2〜3 文の宣伝文>",
-    screenshots: ["/apps/<slug>/screenshots/01.webp", "/apps/<slug>/screenshots/02.webp"],
+    screenshots: ["/apps/<slug>/screens/01.webp", "/apps/<slug>/screens/02.webp"],
   },
   features: [
     {
       title: "<1 行目>\n<2 行目>",
       body: "<2〜3 文>",
-      image: "/apps/<slug>/screenshots/01.webp",
+      image: "/apps/<slug>/screens/01.webp",
     },
     {
       title: "<1 行目>\n<2 行目>",
       body: "<2〜3 文>",
-      image: "/apps/<slug>/screenshots/02.webp",
+      image: "/apps/<slug>/screens/02.webp",
     },
   ],
   stores: {

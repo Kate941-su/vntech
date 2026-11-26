@@ -5,14 +5,16 @@ description: 自社モバイルアプリの宣伝 LP（このリポジトリの 
 
 # アプリの LP を追加・更新する
 
+見た目のルール（shadcn/ui、ニュートラル＋アクセント 1 色、グラデーション禁止、スクショの見せ方）は [.claude/rules/design.md](../../rules/design.md)。必ず先に読む。
+
 ページの型は 1 つだけ。アプリごとの違いは `src/content/apps/<slug>.ts`（設定）と `public/apps/<slug>/`（画像）に閉じ込め、コンポーネントは触らずに済むようにする。
 
 ## ページの型（参考: GDO ゴルフ場予約アプリの LP）
 
 | # | セクション | 中身 | 設定のキー |
 |---|---|---|---|
-| 1 | ヒーロー | アイコン＋アプリ名＋一言 / 見出し（2 行）/ 短い宣伝文（2〜3 文）/ ストアのバッジ / 右に端末画面 1〜2 枚。背景はスクショの背景色のグラデーション | `hero` `theme` `stores` |
-| 2 | 機能 | `POINT 01`〜`04`。見出し（2 行）＋本文（2〜3 文）＋スクショ。左右交互、偶数番目は薄いブランド色の背景 | `features`（2〜4 個） |
+| 1 | ヒーロー | アイコン＋アプリ名＋一言 / 対応端末 / 見出し（2 行）/ 短い宣伝文（2〜3 文）/ ストアのバッジ / 右に端末画面 1〜2 枚。白地 | `hero` `accent` `stores` |
+| 2 | 機能 | `POINT 01`〜`04`。カードの中に見出し（2 行）＋本文（2〜3 文）＋スクショ（薄いグレーのパネル）。左右交互 | `features`（2〜4 個） |
 | 3 | フッター | アイコン＋名前＋バッジをもう一度 / 注意書き / ほかの自社アプリ一覧 / ポリシー・サポートへのリンク / 商標表記 | `notes` `links`、一覧は `src/content/site.ts` |
 
 参考サイトにある動画・クーポン・SNS リンクは入れていない（必要になったらユーザーに確認して型ごと拡張する）。
@@ -23,19 +25,19 @@ description: 自社モバイルアプリの宣伝 LP（このリポジトリの 
 2. **掲載データの取り込み**
    ```sh
    npm run fetch-listing -- <slug> <androidPackageId> [iosBundleId]
+   npm run fetch-listing -- <slug> - <iosBundleId>   # iOS 専用アプリ（App Store から取る）
    ```
    - `public/apps/<slug>/icon.webp` と `screenshots/NN.webp`、`data/listings/<slug>.json`（タイトル・説明文・App Store の URL）ができる
    - Play の開発者ページ（`site.googlePlayDeveloper`）で package ID を確認できる
 3. **スクショを選ぶ**（取り込んだ画像を目で見て確認する。ffmpeg で横に並べると速い）
+   - まずアプリのリポジトリに**素の画面**（`build/store_screenshots/raw/.../ja/phone/*.png` など）があるか探す。あれば `public/apps/<slug>/screens/` に webp で置き、`screenshots.style: "device"` にする（design.md §3）。ストアから取った `screenshots/` は使わないので消す
    - Play はスマホ用とタブレット用が混ざって返る。スマホ用の分だけ残して、ほかは消す
    - 日本語の掲載に英語の画像しかない場合は、アプリのリポジトリ（`fastlane/screenshots/ja` や `store/play/ja`）から日本語版を持ってくる。`sips -s format png -Z 1600` で縮小
    - 機能紹介に使う画像が無い機能は、`image` を省くとテキストだけのブロックになる（できれば画像を用意してもらう）
 4. **設定ファイルを書く**: [template.ts](template.ts) を `src/content/apps/<slug>.ts` にコピーして埋める
-   - `theme.heroFrom` / `heroTo`: スクショ上端と下端の背景色をそのまま使う（画像が背景になじむ）。
-     `ffmpeg -i shot.webp -vf "crop=1:1:20:5,format=rgb24" -f rawvideo - | xxd -p`（webp が読めなければ sips で png にしてから）
-   - `heroInk`: 背景が明るければ `dark`、暗ければ `light`
-   - `screenshotCaptionRatio`: スクショ上部の見出しを隠す割合（見出しが 1 行なら 0.18、サブ見出し付きなら 0.27 くらい）。端末の上端が少し見える値にする
-   - `screenshotAspect`: Play の画像は `1080 / 1920`、iPhone 6.9" は `1320 / 2868`
+   - `accent`: アイコンの主な色から 1 色。白地で文字が読める濃さにする（明るい色は暗くする）
+   - `screenshots.aspect`: 画像の 幅 / 高さ（Play: `1080 / 1920`、iPhone 6.9": `1320 / 2868`、Android の素の画面: `1080 / 2400` など。実物を ffprobe で確認）
+   - `screenshots.cropTop`（card のときだけ）: スクショ上部の見出しを隠す割合（見出しが 1 行なら 0.18、サブ見出し付きなら 0.22〜0.27）。端末の上端が少し見える値にする
    - `stores`: App Store に無いアプリ（Android 専用など）は `appStore` を書かない → バッジが出ない
    - `links`: プライバシーポリシー・サポートは `https://privacy-policy-root.vercel.app/<name>`（そのリポジトリの `policies/` `support/` にある名前。slug と違うことがある。例: stacklens → `stack-lens`）。`curl -o /dev/null -w '%{http_code}'` で 200 を確認してから書く
    - `seo.ogImage`: 日本語のフィーチャーグラフィック（1024x500）があれば `public/apps/<slug>/feature-graphic.png` に置いて指定。無ければ省略（アイコンになる）

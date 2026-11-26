@@ -23,29 +23,29 @@ export type AppLP = {
   /** public/ からのパス（512px 程度の正方形） */
   icon: string;
 
-  theme: {
-    /** ボタン・見出しのアクセント色 */
-    brand: string;
-    /** ヒーロー背景のグラデーション。ストアのスクショの背景色に合わせると画像がなじむ */
-    heroFrom: string;
-    heroTo: string;
-    /** ヒーロー上の文字色が明るい背景用（dark）か暗い背景用（light）か */
-    heroInk: "light" | "dark";
-  };
-
   /**
-   * ストアのスクショ（キャプション付き）の上側を何割切り落として端末部分だけを見せるか。
-   * 0 なら切らない。スクショの見出しの高さに合わせて 0.15〜0.3 くらい
+   * アクセント色（1 色だけ）。POINT の番号・小さな印に使う。背景やグラデーションには使わない。
+   * アイコンの主な色から、白背景で文字が読める濃さのものを選ぶ
    */
-  screenshotCaptionRatio: number;
-  /** スクショの 幅 / 高さ（Play: 1080/1920、iPhone 6.9": 1320/2868） */
-  screenshotAspect: number;
+  accent: string;
+
+  screenshots: {
+    /**
+     * device: 素の画面（見出しなし）を CSS の端末枠に入れて見せる（推奨）
+     * card:   ストア用の画像（見出し・端末枠つき）の上側を切り落とし、角丸のカードで見せる
+     */
+    style: "device" | "card";
+    /** 画像の 幅 / 高さ（Play: 1080/1920、iPhone 6.9": 1320/2868、Android 素の画面: 1080/2400 など） */
+    aspect: number;
+    /** card のとき、上側を何割切り落とすか（見出しが 1 行なら 0.18、サブ見出し付きなら 0.27 くらい）。device では 0 */
+    cropTop: number;
+  };
 
   hero: {
     /** 改行は \n */
     headline: string;
     lead: string;
-    /** ヒーロー右側に重ねて見せるスクショ（1〜3 枚） */
+    /** ヒーロー右側に並べて見せるスクショ（1〜2 枚。1 枚目が手前） */
     screenshots: string[];
   };
 

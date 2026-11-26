@@ -1,23 +1,130 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * 配色のルール（.claude/rules/design.md）
+ * - ニュートラル（白・グレー・黒）＋アクセント 1 色だけ。グラデーション・パステル背景は使わない
+ * - アクセントはアプリごとの --brand（LP のルート要素で指定）。サイト共通のページは黒
+ */
+
+@theme inline {
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --color-brand: var(--brand);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
+:root {
+  /* アクセント 1 色。LP ではアプリの色で上書きする */
+  --brand: oklch(0.205 0 0);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.48 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
 }
 
-body {
-  margin: 0;
-  background: #fff;
-  color: #222;
-  font-family:
-    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, system-ui, sans-serif;
-  line-height: 1.7;
-  overflow-x: hidden;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  /* 日本語の見出しを文節の切れ目で折り返す（対応していないブラウザでは通常の折り返し） */
+  h1,
+  h2,
+  h3 {
+    word-break: auto-phrase;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
-img {
-  max-width: 100%;
+/* お知らせ記事の本文（Markdown から生成した HTML） */
+@layer components {
+  .news-body {
+    @apply text-[15px] leading-8 text-foreground;
+  }
+  .news-body > * + * {
+    @apply mt-5;
+  }
+  .news-body h2 {
+    @apply mt-10 border-b pb-2 text-xl font-semibold tracking-tight;
+  }
+  .news-body h3 {
+    @apply mt-8 text-lg font-semibold;
+  }
+  .news-body ul {
+    @apply list-disc space-y-1 pl-6;
+  }
+  .news-body ol {
+    @apply list-decimal space-y-1 pl-6;
+  }
+  .news-body a {
+    @apply font-medium underline underline-offset-4 hover:text-muted-foreground;
+  }
+  .news-body img {
+    @apply rounded-xl border;
+  }
+  .news-body code {
+    @apply rounded bg-muted px-1.5 py-0.5 text-sm;
+  }
+  .news-body blockquote {
+    @apply border-l-2 pl-4 text-muted-foreground;
+  }
+  .news-body table {
+    @apply w-full text-sm;
+  }
+  .news-body th,
+  .news-body td {
+    @apply border px-3 py-2 text-left;
+  }
 }

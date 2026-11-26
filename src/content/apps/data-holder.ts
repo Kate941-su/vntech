@@ -7,14 +7,8 @@ const app: AppLP = {
   name: "データホルダー",
   tagline: "パスワードや番号を暗号化して端末に保存",
   icon: "/apps/data-holder/icon.webp",
-  theme: {
-    brand: "#0DBAD9",
-    heroFrom: "#d6f4fa",
-    heroTo: "#ffffff",
-    heroInk: "dark",
-  },
-  screenshotCaptionRatio: 0.2,
-  screenshotAspect: 1320 / 2868,
+  accent: "#0a8fa8",
+  screenshots: { style: "card", aspect: 1320 / 2868, cropTop: 0.2 },
   hero: {
     headline: "大切なデータは、\nスマホの中だけに。",
     lead: "ログイン情報、会員番号、パスポートの記載事項。人に見せたくない情報を、暗号化して端末の中に保管します。アカウント登録も広告もありません。",

@@ -5,8 +5,11 @@ import { notFound } from "next/navigation";
 import { Footer } from "@/components/Footer";
 import { SiteHeader } from "@/components/SiteHeader";
 import { findApp } from "@/content/site";
-import { allNews, CATEGORIES, findNews, formatDate } from "@/lib/news";
-import listStyles from "@/components/news.module.css";
+import { ArrowLeft } from "lucide-react";
+import { CategoryBadge } from "@/components/NewsList";
+import { buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { allNews, findNews, formatDate } from "@/lib/news";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -45,31 +48,32 @@ export default async function NewsArticle({ params }: Props) {
   return (
     <>
       <SiteHeader />
-      <article className={listStyles.article}>
-        <p className={listStyles.meta}>
+      <article className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-20">
+        <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           <time dateTime={n.date}>{formatDate(n.date)}</time>
-          <span className={listStyles.category} data-category={n.category}>
-            {CATEGORIES[n.category]}
-          </span>
+          <CategoryBadge category={n.category} />
           {app && (
-            <Link href={`/${app.slug}`} className={listStyles.app}>
-              <Image src={app.icon} alt="" width={18} height={18} className={listStyles.appIcon} />
+            <Link href={`/${app.slug}`} className="inline-flex items-center gap-1.5 hover:text-foreground">
+              <Image src={app.icon} alt="" width={18} height={18} className="size-[18px] rounded" />
               {app.name}
             </Link>
           )}
           {n.version && <span>バージョン {n.version}</span>}
         </p>
-        <h1 className={listStyles.articleTitle}>{n.title}</h1>
+        <h1 className="mt-4 text-3xl font-bold leading-snug tracking-tight">{n.title}</h1>
         {n.image && (
           // 記事ごとに縦横比が違うので next/image の fill ではなく実寸で出す
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={n.image} alt="" className={listStyles.cover} />
+          <img src={n.image} alt="" className="mt-8 w-full rounded-xl border" />
         )}
-        <div className={listStyles.body} dangerouslySetInnerHTML={{ __html: n.html }} />
+        <Separator className="my-8" />
+        <div className="news-body" dangerouslySetInnerHTML={{ __html: n.html }} />
 
-
-        <p className={listStyles.back}>
-          <Link href={app ? `/${app.slug}/news` : "/news"}>← お知らせ一覧へ</Link>
+        <p className="mt-14">
+          <Link href={app ? `/${app.slug}/news` : "/news"} className={buttonVariants({ variant: "outline" })}>
+            <ArrowLeft />
+            お知らせ一覧へ
+          </Link>
         </p>
       </article>
       <Footer app={app} />

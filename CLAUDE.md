@@ -21,6 +21,10 @@
 | `dopadatsu` | ドパ脱！ | jp.vntech.dopadatsu | id6828511093 | `/dopadatsu`、`/dopadatsu/support` | 「医療機器ではありません」等の注意書き必須 |
 | `data-holder` | データホルダー | com.dataholder.dataholder | id6830575982 | `/data-holder`、`/data-holder/support` | Play の日本語掲載は英語のスクショのため、スクショは data-holder リポジトリの `fastlane/screenshots/ja` から。NFC 読み取りの画面のスクショが無い（POINT 03 はテキストのみ） |
 | `stacklens` | スタックレンズ | jp.vntech.stacklens | なし（Android 専用） | `/stack-lens`（サポートなし） | App Store のバッジは出さない |
+| `pianotap` | ピアノタップ | jp.vntech.pianotap | id6834791944 | `/piano-tap`、`/piano-tap/support`、`/piano-tap/terms` | リポジトリ `~/piano`。素の画面が無いのでスクショは card 表示 |
+| `classicplayer` | クラシック名曲プレイヤー | jp.vntech.classic | id6837931432 | GitHub Pages（`kate941-su.github.io/classicplayer/privacy/`・`/support/`。ストアの掲載文に合わせた） | リポジトリ `~/classicmusic`。CMSL の音源・ライセンス表記が必須 |
+| `fuyoshift` | 扶養バイト管理 | jp.vntech.fuyoshift | 未公開（2026-11-26 時点で TestFlight） | `/fuyoshift`、`/fuyoshift/support`、`/fuyoshift/terms` | リポジトリ `~/arbeit`。「目安であり保証しない」「公的機関と無関係」の注意書き必須。App Store に出たらバッジを足す |
+| `tabipoke` | タビポケ | なし（iOS 専用） | id6837183118 | `/tabipoke`、`/tabipoke/support`、`/tabipoke/terms` | リポジトリ `~/tabipoke`。iPhone 専用・iOS 26 以降。掲載文は App Store から取得 |
 | — | 血圧手帳 | com.kaitokitaya.pressure_management | なし | — | LP なし。フッターの一覧のみ |
 | — | World Info | com.worldinfo.app | なし | — | LP なし。フッターの一覧のみ |
 
@@ -30,22 +34,24 @@
 src/content/types.ts          AppLP（LP 1 つ分の設定の型）。各項目の意味はコメント参照
 src/content/apps/<slug>.ts    アプリごとの設定（文言・色・画像・ストア URL）
 src/content/site.ts           LP の並び順、LP なしの自社アプリ、サイト名
-src/components/               Hero / Features / Footer / StoreBadges / Screenshot（全アプリ共通）、News*（お知らせ）
+src/components/               Hero / Features / Footer / StoreBadges / Screenshot / SiteHeader（全アプリ共通）、News*（お知らせ）
+src/components/ui/            shadcn/ui のコンポーネント（CLI で追加。components.json）
 src/app/[app]/page.tsx        LP（generateStaticParams で静的生成。未登録の slug は 404）
 src/app/[app]/news/           アプリ別のお知らせ一覧
 src/app/news/                 お知らせ一覧・記事（[id]）・RSS（feed.xml）
 src/lib/news.ts               news/*.md の読み込みと検証（front matter の誤りはビルドエラー）
 news/<YYYY-MM-DD>-<id>.md     お知らせ記事。画像は public/news/<ファイル名>/
-public/apps/<slug>/           icon.webp、screenshots/、feature-graphic.png（OG 画像）
+public/apps/<slug>/           icon.webp、screens/（素の画面）または screenshots/（ストア画像）、feature-graphic.png（OG 画像）
 public/badges/                ストアの公式バッジ（日本語）。加工しない
 data/listings/<slug>.json     Play の掲載データの控え（文言を書くときの参照用。ページからは読まない）
 scripts/fetch-store-listing.mjs  Play / App Store から上記の素材を取得
 .claude/skills/app-lp/        LP の追加・更新の手順（スキル）とひな形
 .claude/skills/app-news/      お知らせ記事の追加の手順（スキル）とひな形
+.claude/rules/design.md       デザインのルール（shadcn/ui、色とグラデーションを抑える、スクショの見せ方）
 ```
 
-- スクショはストア用の画像（上部に見出し付き）をそのまま使い、`screenshotCaptionRatio` の割合だけ上を切り落として端末部分を見せる
-- ヒーローの背景色はスクショの背景色に合わせる（切り落とした画像が背景になじむ）
+- **見た目は `.claude/rules/design.md` に従う**: UI は shadcn/ui ＋ Tailwind CSS v4。色はニュートラル（白・グレー・黒）＋アプリごとのアクセント 1 色（`accent`）。グラデーション・パステル背景は使わない
+- スクショは素の画面を CSS の端末枠に入れる（`screenshots.style: "device"`）。素の画面が無いアプリだけ、ストア画像の見出しを切り落としたカード（`"card"`）
 
 ## コマンド
 
@@ -55,6 +61,8 @@ npm run lint
 npm run typecheck            # next typegen && tsc
 npm run build
 npm run fetch-listing -- <slug> <androidPackageId> [iosBundleId]
+npm run fetch-listing -- <slug> - <iosBundleId>   # iOS 専用アプリ
+npx shadcn@4.23.1 add <component>                 # shadcn/ui のコンポーネントを追加
 ```
 
 Node は `.nvmrc`（24）。CI（`.github/workflows/ci.yml`）は PR ごとに lint → typecheck → build。
@@ -78,6 +86,9 @@ Node は `.nvmrc`（24）。CI（`.github/workflows/ci.yml`）は PR ごとに l
 ## 決定事項
 
 - 2026-11-12: トップページのサイト名は「Kaito Kitaya のアプリ」
+- 2026-11-26: デザインのルールを決定（UI は shadcn/ui、色とグラデーションを抑える）。詳細は `.claude/rules/design.md`
+- 2026-11-26: ストアで公開済みのアプリ（ピアノタップ・クラシック名曲プレイヤー・扶養バイト管理・タビポケ）の LP を追加。ストア未公開のアプリ（cookhub・tora・radigollira・クチコミ番）は公開されてから追加する
+- 2026-11-26: dopadatsu・data-holder・stacklens・ピアノタップは素の日本語の画面が手元に無いため card 表示。各リポジトリで素の画面を撮ったら `device` に切り替える
 - 2026-11-12: データホルダーの NFC 読み取り画面のスクショはまだ無い。POINT 03 はテキストのみのまま。用意できたら `public/apps/data-holder/screenshots/` に置き、`features[2].image` に指定する
 
 ## 未決事項
